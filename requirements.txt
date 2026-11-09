@@ -1,0 +1,11 @@
+numpy
+scipy
+torch>=2.0
+libigl
+potpourri3d
+robust-laplacian
+scikit-learn
+matplotlib
+polyscope
+PyYAML
+tqdm

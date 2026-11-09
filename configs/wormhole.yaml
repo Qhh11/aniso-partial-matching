@@ -1,0 +1,40 @@
+# External Wormhole code is required; install its dependencies separately.
+objective: wormhole
+wormhole_root: ../Wormhole
+seed: 1234
+temperature: 0.01
+geodesic_weight: 5000.0
+orthogonal_weight: 1.0
+operators:
+  kind: aniso
+  k_eig: 128
+  basis_k: 200
+  normalization: none
+  boundary:
+    beta_tangent: 2.0
+    gamma_normal: 2.0
+    sigmoid_center_frac: 0.06
+    sigmoid_width_frac: 0.02
+    normalize_tensor: trace
+    distance_method: fast_marching
+    direction_method: backtrack
+  transfer:
+    source: soft
+    fallback_mode: none
+    seg_tau: 0.5
+    topk_soft: 20
+    topk_row_soft: 20
+model:
+  backbone: wormhole
+  input: xyz_normals
+  channels: 256
+  width: 128
+  blocks: 4
+  dropout: true
+  gradient: full
+  fmap_k: 200
+training:
+  epochs: 30
+  lr: 0.001
+  scheduler_period: 300
+  min_lr: 0.0001
