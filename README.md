@@ -5,11 +5,6 @@ The tensor is built on the partial mesh, transferred to the full mesh, and used
 to assemble anisotropic Laplace–Beltrami operators. The repository includes
 geometric examples and a portable DiffusionNet training/inference interface.
 
-This is a private source snapshot, not an archive of experimental results. No datasets,
-teacher weights, trained checkpoints, private reports, or historical caches are
-included. The example configurations are starting points, not a promise to
-reproduce numbers from a particular historical run.
-
 ## Layout
 
 ```text
