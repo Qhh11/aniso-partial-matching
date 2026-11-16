@@ -57,7 +57,7 @@ source_to_other,clean/tr_reg_000_part.ply,clean/tr_reg_010_full.ply,clean/tr_reg
 ```
 
 The second row is valid only for registered meshes sharing the same template
-vertex indexing. Never reuse these dense IDs on remeshed targets.
+vertex indexing. 
 
 - `gt`: a zero-based dense partial-to-full `.npy` vector, or an `.npz` containing
   equally sized `partial` and `full` reference-index arrays. Repeated evaluation
@@ -69,8 +69,6 @@ vertex indexing. Never reuse these dense IDs on remeshed targets.
 - Optional `hard`: a zero-based partial-to-full index vector.
 - `pairing`: `same` or `cross`, required by the corresponding HKS examples.
 
-Keep train, validation and test manifests separate. The driver does not select
-checkpoints on the test set or infer splits from filenames.
 
 ## Training and inference
 
@@ -98,9 +96,9 @@ Configuration switches:
   GT is an oracle control, including during inference if explicitly selected.
   For deployment use externally estimated maps; GT is not required for prediction.
 - `model.gradient: full | identity` selects learned gradient-channel mixing or
-  the explicit energy `tanh(gx^2 + gy^2)`. Identity does not remove gradients.
+  the explicit energy `tanh(gx^2 + gy^2)`. 
 - The FM backbone is the included DiffusionNet. The WH backbone and losses are
-  loaded from an external Wormhole checkout, not silently replaced by the FM model.
+  loaded from an external Wormhole checkout.
 
 FM-MSE uses the feature-fitted functional-map decoder. WH inference follows
 hard feature NN, spectral projection, then functional-map decoding. Both also
@@ -133,8 +131,7 @@ np.save('pair_soft.npy', P[0].detach().cpu().numpy())
 np.save('pair_argmax.npy', P[0].argmax(-1).detach().cpu().numpy())
 ```
 
-This is a snippet to insert in the external evaluation loop, not an additional
-dump command assumed to exist upstream. A hard map returned by
+This is a snippet to insert in the external evaluation loop. A hard map returned by
 `validate_single()` is FM-decoded and is not generally the same as raw-soft
 argmax. Its returned `Pyx` is spectrally reconstructed, not raw softmax
 probabilities. Store the map kind explicitly; use `source: reconstructed` for
@@ -145,9 +142,7 @@ soft` requires nonnegative, row-normalized probabilities.
 
 Add the `soft` or `hard` path to the pair manifest and choose the corresponding
 transfer source. The partial tensor is transported to the full surface before
-assembling either diffusion operator. No Wormhole inference is hidden in this
-step. Training-time soft correspondences used by the WH loss are separate
-from these frozen teacher correspondences used for tensor transfer.
+assembling either diffusion operator.
 
 ### WH-objective training
 
@@ -157,15 +152,11 @@ manifest columns: `train_full_dist`, `train_partial_dist`,
 `train_partial_mass`, and `train_mask` (`.npy` files). These must contain the
 already-preprocessed inputs expected by that external implementation:
 `[Nf,Nf]`, `[Np,Np]`, `[Np]`, and `[Np,Np]` respectively. These are distinct
-from raw evaluation distances and GT visibility masks. Use its preprocessing
-pipeline and matching mesh vertex order/scale; this release does not guess or
-silently recompute the Wormhole mask.
+from raw evaluation distances and GT visibility masks.
 
 Use the same training command with `configs/wormhole.yaml`. The WH regularizer
 and FM decoder retain the common ISO basis; the ANISO spectrum is used inside
-feature diffusion. Record the external commit and dataset preprocessing when
-comparing methods. Full-epoch benchmark reproduction is not implied by the
-synthetic smoke tests.
+feature diffusion. 
 
 ## Examples
 
